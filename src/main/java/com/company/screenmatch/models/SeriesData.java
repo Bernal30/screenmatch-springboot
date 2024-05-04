@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public record SeriesData(
         //con JsonAlias se identifica el atributo estrictamente escritpo como está en el json
         @JsonAlias("Title") String title,
-        @JsonAlias("totalSeasons") String totalSeasons,
-        @JsonAlias("imdbRating") String rating
+        @JsonAlias("totalSeasons") Integer totalSeasons,
+        @JsonAlias("imdbRating") Double rating
 ) {
 
     @Override
