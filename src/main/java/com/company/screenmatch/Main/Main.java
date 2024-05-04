@@ -1,5 +1,6 @@
 package com.company.screenmatch.Main;
 
+import com.company.screenmatch.models.EpisodeData;
 import com.company.screenmatch.models.SeasonData;
 import com.company.screenmatch.models.SeriesData;
 import com.company.screenmatch.service.ApiConsumption;
@@ -43,6 +44,16 @@ public class Main {
             seasonsList.add(seasonsData);
         }
         //print every element from the array
-        seasonsList.forEach(System.out::println);
+        //seasonsList.forEach(System.out::println);
+
+        //shows only the name of the episode of each season
+        for (int i = 0; i < pasringSerieData.totalSeasons(); i++) {
+            //episodes array of each season
+            List<EpisodeData> episodesOnSeason = seasonsList.get(i).episodesList();
+            for (int j = 0; j < episodesOnSeason.size(); j++) {
+                System.out.println(episodesOnSeason.get(j).title());
+            }
+        }
+
     }
 }
