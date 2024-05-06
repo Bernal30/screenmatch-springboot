@@ -7,8 +7,10 @@ import com.company.screenmatch.service.ApiConsumption;
 import com.company.screenmatch.service.DataConverter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
     private Scanner keyboard = new Scanner(System.in);
@@ -47,13 +49,29 @@ public class Main {
         //seasonsList.forEach(System.out::println);
 
         //shows only the name of the episode of each season
-        for (int i = 0; i < pasringSerieData.totalSeasons(); i++) {
-            //episodes array of each season
-            List<EpisodeData> episodesOnSeason = seasonsList.get(i).episodesList();
-            for (int j = 0; j < episodesOnSeason.size(); j++) {
-                System.out.println(episodesOnSeason.get(j).title());
-            }
-        }
+//        for (int i = 0; i < pasringSerieData.totalSeasons(); i++) {
+//            //episodes array of each season
+//            List<EpisodeData> episodesOnSeason = seasonsList.get(i).episodesList();
+//            for (int j = 0; j < episodesOnSeason.size(); j++) {
+//                System.out.println(episodesOnSeason.get(j).title());
+//            }
+//        }
+
+        //lambda function to replace the bucle for inside another bucle for
+        //se imprimen todos los episodios de la serie
+        seasonsList.forEach(t -> t.episodesList().forEach(e -> System.out.println(e.title())));
+
+        //Convertir todas las informaciones enuna lista del tipo EpisodeData
+        List<EpisodeData> episodeData = seasonsList.stream()
+                .flatMap(t -> t.episodesList().stream())
+                .collect(Collectors.toList());
+
+        //Top 5 episodes by rating
+        System.out.println("--- Top 5 episodios por calificaión ---");
+        episodeData.stream()
+                .sorted(Comparator.comparing(EpisodeData::rating).reversed())
+                .limit(5)
+                .forEach(System.out::println);
 
     }
 }

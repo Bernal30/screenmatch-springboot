@@ -20,5 +20,8 @@ public class ScreenmatchApplication implements CommandLineRunner {
 		Main main = new Main();
 		main.showMenu();
 
+//		StreamExample streamExample = new StreamExample();
+//		streamExample.showExample();
+
 	}
 }
