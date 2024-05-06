@@ -7,6 +7,8 @@ import com.company.screenmatch.models.SeriesData;
 import com.company.screenmatch.service.ApiConsumption;
 import com.company.screenmatch.service.DataConverter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -81,8 +83,34 @@ public class Main {
                         .map(d -> new Episode(t.seasonNumber(), d)))
                 .collect(Collectors.toList());
 
-        //imprimir cada elemnto del array episodes
+        //imprimir cada elemento del array episodes
         episodes.forEach(System.out::println);
 
+        //busqueda de episodio a partir de x año de estreno
+        System.out.print("""
+                --- Busqueda de capitulos por año de lanzamiento ---
+                Ingrese el año de la fecha de lanzamiento:
+                """);
+        var userYear = keyboard.nextInt();
+
+        LocalDate dateSearch = LocalDate.of(userYear, 1, 1);
+
+        //modificamos el formato de como se muestra la fecha de lanzamiento
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        //modificar la lista de episodios para la busqueda
+        episodes.stream()
+                .filter(e -> e.getDateReales() != null && e.getDateReales().isAfter(dateSearch))
+                .forEach(e -> System.out.println(
+                        "Temporada: " + e.getSeasonNumber() +
+                                ", Episodio: " + e.getTitle() +
+                                ", Fecha de lanzamiento: " + e.getDateReales().format(dtf)
+                ));
+
+
+
+        keyboard.close();
     }
 }
+
+
