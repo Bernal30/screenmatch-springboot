@@ -1,5 +1,6 @@
 package com.company.screenmatch.Main;
 
+import com.company.screenmatch.models.Episode;
 import com.company.screenmatch.models.EpisodeData;
 import com.company.screenmatch.models.SeasonData;
 import com.company.screenmatch.models.SeriesData;
@@ -59,7 +60,7 @@ public class Main {
 
         //lambda function to replace the bucle for inside another bucle for
         //se imprimen todos los episodios de la serie
-        seasonsList.forEach(t -> t.episodesList().forEach(e -> System.out.println(e.title())));
+        //seasonsList.forEach(t -> t.episodesList().forEach(e -> System.out.println(e.title())));
 
         //Convertir todas las informaciones enuna lista del tipo EpisodeData
         List<EpisodeData> episodeData = seasonsList.stream()
@@ -69,9 +70,19 @@ public class Main {
         //Top 5 episodes by rating
         System.out.println("--- Top 5 episodios por calificaión ---");
         episodeData.stream()
+                .filter(e -> !e.rating().equalsIgnoreCase("N/A"))
                 .sorted(Comparator.comparing(EpisodeData::rating).reversed())
                 .limit(5)
                 .forEach(System.out::println);
+
+        //Convirtiendo los datos a una lista del tipo Episode
+        List<Episode> episodes = seasonsList.stream()
+                .flatMap(t -> t.episodesList().stream()
+                        .map(d -> new Episode(t.seasonNumber(), d)))
+                .collect(Collectors.toList());
+
+        //imprimir cada elemnto del array episodes
+        episodes.forEach(System.out::println);
 
     }
 }
