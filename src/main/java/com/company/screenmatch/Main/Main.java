@@ -88,42 +88,59 @@ public class Main {
         //episodes.forEach(System.out::println);
 
         //busqueda de episodio a partir de x año de estreno
-        System.out.print("""
-                --- Busqueda de capitulos por año de lanzamiento ---
-                Ingrese el año de la fecha de lanzamiento:
-                """);
-        var userYear = keyboard.nextInt();
-
-        LocalDate dateSearch = LocalDate.of(userYear, 1, 1);
-
-        //modificamos el formato de como se muestra la fecha de lanzamiento
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        //modificar la lista de episodios para la busqueda
-        episodes.stream()
-                .filter(e -> e.getDateReales() != null && e.getDateReales().isAfter(dateSearch))
-                .forEach(e -> System.out.println(
-                        "Temporada: " + e.getSeasonNumber() +
-                                ", Episodio: " + e.getTitle() +
-                                ", Fecha de lanzamiento: " + e.getDateReales().format(dtf)
-                ));
+//        System.out.print("""
+//                --- Busqueda de capitulos por año de lanzamiento ---
+//                Ingrese el año de la fecha de lanzamiento:
+//                """);
+//        var userYear = keyboard.nextInt();
+//
+//        LocalDate dateSearch = LocalDate.of(userYear, 1, 1);
+//
+//        //modificamos el formato de como se muestra la fecha de lanzamiento
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//
+//        //modificar la lista de episodios para la busqueda
+//        episodes.stream()
+//                .filter(e -> e.getDateReales() != null && e.getDateReales().isAfter(dateSearch))
+//                .forEach(e -> System.out.println(
+//                        "Temporada: " + e.getSeasonNumber() +
+//                                ", Episodio: " + e.getTitle() +
+//                                ", Fecha de lanzamiento: " + e.getDateReales().format(dtf)
+//                ));
 
         //buscar un episodio por el titulo
-        System.out.println("""
-                --- Busqueda de un episodio por el titulo ---
-                Ingrese el tituo del episodio que desea buscar: 
-                """);
-        var userEpisodeTitle = keyboard.next();
-        Optional<Episode> searchedEpisode = episodes.stream()
-                .filter(e -> e.getTitle().contains(userEpisodeTitle))
-                .findFirst();
+//        System.out.println("""
+//                --- Busqueda de un episodio por el titulo ---
+//                Ingrese el tituo del episodio que desea buscar:
+//                """);
+//        var userEpisodeTitle = keyboard.next();
+//        Optional<Episode> searchedEpisode = episodes.stream()
+//                .filter(e -> e.getTitle().toUpperCase().contains(userEpisodeTitle.toUpperCase()))
+//                .findFirst();
+//
+//        if (searchedEpisode.isPresent()) {
+//            System.out.println("--Episodio encontrado--");
+//            System.out.println("Los datos son : " + searchedEpisode.get());
+//        } else {
+//            System.out.println("Episodio no encontrado");
+//        }
 
-        if (searchedEpisode.isPresent()) {
-            System.out.println("Episodio encontrado");
-            System.out.println("Los datos son : " + searchedEpisode.get());
-        } else {
-            System.out.println("Episodio no encontrado");
-        }
+
+        Map<Integer, Double> ratingsBySeason = episodes.stream()
+                .filter(e -> e.getRating() > 0.0) //filtra los ratings mayores a cero
+                .collect(Collectors.groupingBy(Episode::getSeasonNumber,
+                        Collectors.averagingDouble(Episode::getRating))); //se calcula el promedio de los ratings para cada temporada individual
+        System.out.println("Temporadas calificadas en imdb: " + ratingsBySeason);
+
+        //se consigen algunas estadisticas de los ratings de os capitulos
+        DoubleSummaryStatistics est = episodes.stream()
+                .filter(e -> e.getRating() > 0.0)
+                        .collect(Collectors.summarizingDouble(Episode::getRating));
+        System.out.println("Media de las valuaciones de los capitulos: " + est.getAverage());
+        System.out.println("Mejor calificaión para un capitulo: " + est.getMax());
+        System.out.println("Peor calificación para un capitulo: " + est.getMin());
+
+
 
         keyboard.close();
     }
