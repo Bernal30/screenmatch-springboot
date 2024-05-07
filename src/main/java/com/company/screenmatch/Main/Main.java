@@ -9,10 +9,7 @@ import com.company.screenmatch.service.DataConverter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -73,8 +70,12 @@ public class Main {
         System.out.println("--- Top 5 episodios por calificaión ---");
         episodeData.stream()
                 .filter(e -> !e.rating().equalsIgnoreCase("N/A"))
+                .peek(e -> System.out.println("Primer filtro (N/A) " + e))
                 .sorted(Comparator.comparing(EpisodeData::rating).reversed())
+                //.peek(e -> System.out.println("Segundo filtro (Ordenar de mayor a menor) " + e))
                 .limit(5)
+                //.map(e -> e.title().toUpperCase())
+                //.peek(e -> System.out.println("Tercer filtro titulos en mayusculas " + e))
                 .forEach(System.out::println);
 
         //Convirtiendo los datos a una lista del tipo Episode
@@ -84,7 +85,7 @@ public class Main {
                 .collect(Collectors.toList());
 
         //imprimir cada elemento del array episodes
-        episodes.forEach(System.out::println);
+        //episodes.forEach(System.out::println);
 
         //busqueda de episodio a partir de x año de estreno
         System.out.print("""
@@ -107,7 +108,22 @@ public class Main {
                                 ", Fecha de lanzamiento: " + e.getDateReales().format(dtf)
                 ));
 
+        //buscar un episodio por el titulo
+        System.out.println("""
+                --- Busqueda de un episodio por el titulo ---
+                Ingrese el tituo del episodio que desea buscar: 
+                """);
+        var userEpisodeTitle = keyboard.next();
+        Optional<Episode> searchedEpisode = episodes.stream()
+                .filter(e -> e.getTitle().contains(userEpisodeTitle))
+                .findFirst();
 
+        if (searchedEpisode.isPresent()) {
+            System.out.println("Episodio encontrado");
+            System.out.println("Los datos son : " + searchedEpisode.get());
+        } else {
+            System.out.println("Episodio no encontrado");
+        }
 
         keyboard.close();
     }
